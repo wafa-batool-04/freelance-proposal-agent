@@ -1,0 +1,41 @@
+# Freelance Proposal Agent — Cursor Rules
+
+## Project Overview
+This is a multi-agent AI system that generates tailored freelance proposals using the Anthropic Claude API. It analyzes job postings and produces compelling, personalized proposals.
+
+## Architecture
+- `agents/` — Specialized agent modules (analyzer, writer, reviewer)
+- `tools/` — Tool definitions for Claude's tool use API
+- `templates/` — Proposal templates and prompt templates
+- `utils/` — Shared utilities (file I/O, formatting, logging)
+- `outputs/` — Generated proposals (git-ignored)
+
+## Code Style
+- Python 3.10+
+- Use type hints on all functions and class methods
+- Prefer dataclasses or Pydantic models over raw dicts for structured data
+- Keep functions small and single-purpose
+- No comments explaining what code does — only why when non-obvious
+
+## Claude API Usage
+- Always use the latest Claude model (claude-sonnet-4-6 or claude-opus-4-7)
+- Enable prompt caching on system prompts and large static content
+- Use structured tool use for extracting structured data from job posts
+- Handle API errors gracefully with informative messages
+- Never hardcode API keys — always read from environment variables
+
+## Agent Design
+- Each agent has a single responsibility
+- Agents communicate via well-typed Python objects, not raw strings
+- The orchestrator in `main.py` coordinates agent execution
+- Use streaming where response latency matters
+
+## Environment
+- Store secrets in `.env` (never commit)
+- Use `python-dotenv` to load environment variables
+- Required env var: `ANTHROPIC_API_KEY`
+
+## Testing
+- Write tests for utility functions and tool definitions
+- Mock Anthropic API calls in tests
+- Place tests in a `tests/` directory mirroring the source structure
