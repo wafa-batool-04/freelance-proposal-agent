@@ -227,7 +227,7 @@ def main():
             col_rv1, col_rv2 = st.columns([1, 3])
             with col_rv1:
                 st.metric("Score", f"{score}/10")
-                st.progress(score / 10)
+                st.progress(min(max(score, 0), 10) / 10)
             with col_rv2:
                 st.markdown("**Verdict**")
                 st.write(r.get("verdict", ""))

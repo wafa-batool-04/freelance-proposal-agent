@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import json
-
 from config.markets import MarketConfig
 from tools.llm_client import LLMClient
+from utils.json_utils import parse_llm_json
 
 SYSTEM = """You are a freelance pricing strategist with deep knowledge of market rates across platforms and niches.
 You analyze job postings and freelancer profiles to recommend optimal pricing strategies.
@@ -62,9 +61,4 @@ class PricingAnalyst:
             max_tokens=1024,
             temperature=0.3,
         )
-        try:
-            return json.loads(response)
-        except json.JSONDecodeError:
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            return json.loads(response[start:end])
+        return parse_llm_json(response)

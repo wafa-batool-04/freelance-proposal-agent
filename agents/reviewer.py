@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import json
-
 from config.markets import MarketConfig
 from tools.llm_client import LLMClient
+from utils.json_utils import parse_llm_json
 
 SYSTEM = """You are a senior freelance coach who has reviewed thousands of proposals across all major platforms.
 You give brutally honest, specific feedback — no sugarcoating, no generic advice.
@@ -54,9 +53,4 @@ class ProposalReviewer:
             max_tokens=2048,
             temperature=0.3,
         )
-        try:
-            return json.loads(response)
-        except json.JSONDecodeError:
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            return json.loads(response[start:end])
+        return parse_llm_json(response)

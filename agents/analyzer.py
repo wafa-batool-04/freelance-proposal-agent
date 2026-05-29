@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import json
-
 from tools.llm_client import LLMClient
+from utils.json_utils import parse_llm_json
 
 SYSTEM = """You are an expert freelance job analyst. Extract structured insights from job postings.
 Always respond with valid JSON only — no markdown, no explanation."""
@@ -29,9 +28,4 @@ class JobAnalyzer:
             max_tokens=1024,
             temperature=0.3,
         )
-        try:
-            return json.loads(response)
-        except json.JSONDecodeError:
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            return json.loads(response[start:end])
+        return parse_llm_json(response)

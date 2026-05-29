@@ -153,14 +153,19 @@ class ProposalOrchestrator:
         effective_rate = result.pricing.get("recommended_rate", profile.rate)
 
         notify("write", "running")
-        chunks = self._writer.stream(
+        raw_chunks = self._writer.stream(
             analysis=result.analysis,
             market=market,
             freelancer_name=profile.name,
             skills=profile.skills,
             rate=effective_rate,
         )
-        return result, chunks
+
+        def _with_done() -> Iterator[str]:
+            yield from raw_chunks
+            notify("write", "done")
+
+        return result, _with_done()
 
     def review_proposal(
         self,

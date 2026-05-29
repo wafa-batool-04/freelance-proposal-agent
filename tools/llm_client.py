@@ -18,7 +18,7 @@ class Provider(str, Enum):
 
 class ModelConfig:
     ANTHROPIC_DEFAULT = "claude-sonnet-4-6"
-    ANTHROPIC_POWERFUL = "claude-opus-4-7"
+    ANTHROPIC_POWERFUL = "claude-opus-4-8"
     GROQ_DEFAULT = "llama-3.3-70b-versatile"
     GROQ_FAST = "llama-3.1-8b-instant"
 
@@ -28,6 +28,10 @@ class LLMClient:
         self.provider = provider
         self._anthropic: anthropic.Anthropic | None = None
         self._groq: groq.Groq | None = None
+        if provider == Provider.ANTHROPIC and not os.getenv("ANTHROPIC_API_KEY"):
+            raise ValueError("ANTHROPIC_API_KEY not set in environment")
+        if provider == Provider.GROQ and not os.getenv("GROQ_API_KEY"):
+            raise ValueError("GROQ_API_KEY not set in environment")
 
     @property
     def anthropic(self) -> anthropic.Anthropic:
@@ -96,6 +100,8 @@ class LLMClient:
             system=system_content if system_content else anthropic.NOT_GIVEN,
             messages=[{"role": "user", "content": prompt}],
         )
+        if not response.content:
+            return ""
         return response.content[0].text
 
     def _complete_groq(
